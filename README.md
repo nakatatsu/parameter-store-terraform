@@ -71,16 +71,16 @@ DevContainerで開き、下記を実行します。本当にパラメータス�
 
 4. AWSにログインし、適用します。
 
-ここではIAM Identity Centerを前提としていますが、各自、自己の環境にあわせて読み替えてください。
+   ここではIAM Identity Centerを前提としていますが、各自、自己の環境にあわせて読み替えてください。
 
-```bash
-aws configure sso --use-device-code
-aws sso login --profile \<profile> --use-device-code
-export AWS_PROFILE=\<profile>
-terraform -chdir=development init
-terraform -chdir=development plan
-terraform -chdir=development apply
-```
+   ```bash
+   aws configure sso --use-device-code
+   aws sso login --profile <profile> --use-device-code
+   export AWS_PROFILE=<profile>
+   terraform -chdir=development init
+   terraform -chdir=development plan
+   terraform -chdir=development apply
+   ```
 
 ### 暗号化したファイルの編集方法
 
@@ -110,3 +110,9 @@ terraform -chdir=development apply
 ## その他重要なこと
 
 - 暗号化前のファイル（`secrets.yaml`）は本来gitignoreで除外するのが正しいです。今回は例示のためあえてコメントアウトしています。
+- セキュリティを優先してStateファイルに値を残さないようにしているのですが、この代償に毎回差分がでる状況です。安定した回避方法が見つからず、やむなく全部差分で出るようにしています。PRで変更を確認することは可能なため、取り扱う量が少なければ問題ないのですが、莫大なパラメータ数になると厳しいです。terraform本体の改善を期待したいところですが、当面はルートディレクトリ側で細かく分けてあげるといったハックでしのぐしかなさそうです。
+
+
+## 参考
+
+- [terraform-provider-sopsとEphemeral valuesを使ってTerraformでシークレットを安全に扱う](https://tech.guitarrapc.com/entry/2026/01/06/230000)

@@ -38,7 +38,7 @@ RUN ARCH=$(dpkg --print-architecture) && \
 
 RUN groupadd --gid "${USER_GID}" "${USERNAME}" && \
   useradd --uid "${USER_UID}" --gid "${USER_GID}" --create-home --shell /bin/bash "${USERNAME}" && \
-  mkdir -p "/home/${USERNAME}/.aws" "/home/${USERNAME}/.config/sops/age" && \
+  mkdir -p "/home/${USERNAME}/.aws" && \
   chown -R "${USERNAME}:${USERNAME}" "/home/${USERNAME}"
 
 USER ${USERNAME}

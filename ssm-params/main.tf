@@ -4,7 +4,7 @@ locals {
 }
 
 # Terraform does not store ephemeral resources in state or plan files. ref: https://developer.hashicorp.com/terraform/plugin/framework/ephemeral-resources
-# Values defined as Sensitive. ref: https://registry.terraform.io/providers/binlab/sops/latest/docs/ephemeral-resources/file
+# Values defined as Sensitive. ref: https://registry.terraform.io/providers/carlpett/sops/latest/docs/ephemeral-resources/file
 ephemeral "sops_file" "this" {
   source_file = var.secrets_file
   input_type  = "yaml"
@@ -14,8 +14,9 @@ resource "aws_ssm_parameter" "this" {
   #checkov:skip=CKV_AWS_337
   for_each = local.encrypted
 
-  name             = each.key
-  type             = "SecureString"
-  value_wo         = local.secrets[each.key]
-  value_wo_version = parseint(substr(sha256(each.value), 0, 12), 16)
+  name     = each.key
+  type     = "SecureString"
+  value_wo = local.secrets[each.key]
+  # 手動変更だと忘れかねないため、自動更新している。毎回すべて差分として認識されてしまうが、やむを得ないとしている。
+  value_wo_version = parseint(substr(filesha256(var.secrets_file), 0, 12), 16)
 }
